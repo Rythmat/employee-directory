@@ -18,6 +18,7 @@ app.get('/employees', (req, res) => {
 });
 
 app.post('/employees', (req,res,next) => {
+  console.log(req);
   const {name} = req.body;
 
   if(!name){
