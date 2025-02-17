@@ -60,6 +60,11 @@ app.use((err, req, res, next) => {
   res.status(400).send(err.message);
 });
 
+
+app.use((req, res) => {
+  res.status(404).send('Page Not Found!')
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
