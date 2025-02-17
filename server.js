@@ -1,5 +1,6 @@
 const employees = require('./employees.js');
-
+let nextId = 9;
+ 
 const express = require('express');
 const app = express();
 
@@ -8,13 +9,29 @@ app.get('/', (req,res) => {
 })
 
 app.get('/employees', (req, res) => {
-  // res.sendFile(`${__dirname}/employees.js`);
   let out = '';
   employees.forEach((employee)=>{
     out += `<h1>${employee.name}: Employee #${employee.id}</h1>`;
   })
   res.send(out)
 
+});
+
+app.post('/employees', (req,res,next) => {
+  const {name} = req.body;
+
+  if(!name){
+    const error = new Error("no name provided");
+    next(error)
+  } else {
+    employees.push({
+      id: nextId,
+      name
+    });
+    nextId++;
+    res.send(employees)
+  }
+  
 });
 
 app.get('/employees/:id', (req, res) => {
@@ -35,8 +52,14 @@ app.get('/employees/:id', (req, res) => {
 })
 
 
+app.use((err, req, res, next) => {
+  console.log('ERROR MESSAGE', err.message);
+  res.status(400).send(err.message);
+});
 
-app.listen(3000, () => {
-  console.log(`listening on PORT 3000`);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
 });
 
